@@ -5,7 +5,7 @@ gcloud artifacts repositories create argocd-app \
     --location=asia-northeast1
 
 # 2. Docker認証設定
-gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+`$ gcloud auth configure-docker asia-northeast1-docker.pkg.dev`
 
 # 3. Skaffoldでビルド・プッシュ
 skaffold build

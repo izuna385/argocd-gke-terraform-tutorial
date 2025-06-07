@@ -11,14 +11,14 @@ build:
     docker:
       dockerfile: Dockerfile
   
-  # Artifact Registry用の設定
   tagPolicy:
     gitCommit: {}
 
-deploy:
-  kubectl:
-    manifests:
-    - k8s-manifests/*.yaml
+# デプロイ設定は削除（ビルドのみに集中）
+# deploy:
+#   kubectl:
+#     manifests:
+#     - k8s-manifests/*.yaml
 
 profiles:
 - name: dev
