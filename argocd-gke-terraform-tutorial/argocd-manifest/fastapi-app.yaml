@@ -2,7 +2,11 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: fastapi-app
-  namespace: argocd               # ArgoCDコントロールプレーンのネームスペースに作成
+  namespace: argocd        
+  annotations:
+    # helm install argocd-image-updater argo/argocd-image-updater --namespace argocd でinstallされていることが前提
+    argocd-image-updater.argoproj.io/image-list: asia-northeast1-docker.pkg.dev/gcp-iap-test-442622/argocd-app/fastapi-app
+    argocd-image-updater.argoproj.io/write-back-method: git       # ArgoCDコントロールプレーンのネームスペースに作成
 spec:
   project: default                # デフォルトプロジェクトを使用
   source:
@@ -11,7 +15,7 @@ spec:
     path: base                    # マニフェストが格納されたパス (本例ではfastapi-manifests/base)
   destination:
     server: https://kubernetes.default.svc
-    namespace: fastapi            # アプリをデプロイする対象ネームスペース
+    namespace: default            # アプリをデプロイする対象ネームスペース
   syncPolicy:
     automated:
       prune: true

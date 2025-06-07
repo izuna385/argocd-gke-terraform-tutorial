@@ -1,15 +1,16 @@
 # app/skaffold.yaml
-apiVersion: skaffold/v4beta11
+apiVersion: skaffold/v2beta16
 kind: Config
 metadata:
-  name: sample-app
+  name: fastapi-app
 
 build:
   artifacts:
-  - image: asia-northeast1-docker.pkg.dev/gcp-iap-test-442622/argocd-app/sample-app
+  - image: asia-northeast1-docker.pkg.dev/gcp-iap-test-442622/argocd-app/fastapi-app
     context: .
     docker:
       dockerfile: Dockerfile
+
   
   tagPolicy:
     gitCommit: {}
@@ -24,9 +25,10 @@ profiles:
 - name: dev
   build:
     artifacts:
-    - image: asia-northeast1-docker.pkg.dev/gcp-iap-test-442622/argocd-app/sample-app
+    - image: asia-northeast1-docker.pkg.dev/gcp-iap-test-442622/argocd-app/fastapi-app
       context: .
       docker:
         dockerfile: Dockerfile
+
     tagPolicy:
       sha256: {}
