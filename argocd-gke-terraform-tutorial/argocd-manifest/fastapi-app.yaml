@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fastapi-app
+  namespace: argocd               # ArgoCDコントロールプレーンのネームスペースに作成
+spec:
+  project: default                # デフォルトプロジェクトを使用
+  source:
+    repoURL: 'https://github.com/izuna385/fastapi-manifests.git'
+    targetRevision: HEAD          # Gitのブランチやタグ (ここではデフォルトブランチを使用)
+    path: base                    # マニフェストが格納されたパス (本例ではfastapi-manifests/base)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default            # アプリをデプロイする対象ネームスペース
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true        # namespaceが未作成でも自動で作成する
