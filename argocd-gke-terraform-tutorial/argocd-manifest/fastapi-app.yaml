@@ -11,7 +11,7 @@ spec:
     path: base                    # マニフェストが格納されたパス (本例ではfastapi-manifests/base)
   destination:
     server: https://kubernetes.default.svc
-    namespace: default            # アプリをデプロイする対象ネームスペース
+    namespace: fastapi            # アプリをデプロイする対象ネームスペース
   syncPolicy:
     automated:
       prune: true
