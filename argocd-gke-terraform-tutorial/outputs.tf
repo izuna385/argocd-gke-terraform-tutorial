@@ -16,7 +16,7 @@ output "cluster_location" {
 
 output "argocd_static_ip" {
   description = "ArgoCD用の静的IP"
-  value       = google_compute_global_address.argocd_ip.address
+  value       = google_compute_address.argocd_ip.address
 }
 
 output "argocd_domain" {

@@ -1,5 +1,3 @@
-
-
 # GKEクラスターの作成
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
@@ -57,10 +55,12 @@ resource "google_service_account" "gke_node_sa" {
   display_name = "GKE Node Service Account"
 }
 
-# 静的グローバルIPの予約
-resource "google_compute_global_address" "argocd_ip" {
-  name        = "argocd-static-ip"
-  description = "Static IP for ArgoCD ingress"
+# リージョナル静的IPの予約（GKE LoadBalancer用）
+resource "google_compute_address" "argocd_ip" {
+  name         = "argocd-static-ip"
+  description  = "Static IP for ArgoCD LoadBalancer"
+  region       = var.region
+  address_type = "EXTERNAL"
 }
 
 # Cloud DNS マネージドゾーンの作成
@@ -78,5 +78,6 @@ resource "google_dns_record_set" "argocd_a_record" {
 
   managed_zone = google_dns_managed_zone.argocd_zone.name
 
-  rrdatas = [google_compute_global_address.argocd_ip.address]
+  # rrdatas = [google_compute_global_address.argocd_ip.address]
+  rrdatas = [google_compute_address.argocd_ip.address]
 }
