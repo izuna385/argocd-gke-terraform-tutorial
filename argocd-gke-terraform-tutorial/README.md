@@ -355,6 +355,13 @@ Changes to Outputs:
 
 </details>
 
+## ArgoCD, ArgoCD-image-updater 導入
+```bash
+$ helm install argocd argo/argo-cd -n argocd \
+    --set server.service.type=LoadBalancer
+$ helm install argocd-image-updater argo/argocd-image-updater --namespace argocd
+
+```
 
 ## 参考文献
 

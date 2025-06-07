@@ -38,3 +38,13 @@ output "tf_state_bucket" {
   description = "Terraform状態保存用GCSバケット"
   value       = "gs://gcp-iap-test-442622-tf-state"
 }
+
+output "artifact_registry_repository" {
+  description = "Artifact Registry リポジトリURL"
+  value       = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.argocd_app_repo.repository_id}"
+}
+
+output "docker_push_command" {
+  description = "Docker認証設定コマンド"
+  value       = "gcloud auth configure-docker ${var.region}-docker.pkg.dev"
+}
