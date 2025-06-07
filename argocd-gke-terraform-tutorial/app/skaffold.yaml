@@ -1,0 +1,32 @@
+# app/skaffold.yaml
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: sample-app
+
+build:
+  artifacts:
+  - image: asia-northeast1-docker.pkg.dev/gcp-iap-test-442622/argocd-app/sample-app
+    context: .
+    docker:
+      dockerfile: Dockerfile
+  
+  # Artifact Registry用の設定
+  tagPolicy:
+    gitCommit: {}
+
+deploy:
+  kubectl:
+    manifests:
+    - k8s-manifests/*.yaml
+
+profiles:
+- name: dev
+  build:
+    artifacts:
+    - image: asia-northeast1-docker.pkg.dev/gcp-iap-test-442622/argocd-app/sample-app
+      context: .
+      docker:
+        dockerfile: Dockerfile
+    tagPolicy:
+      sha256: {}

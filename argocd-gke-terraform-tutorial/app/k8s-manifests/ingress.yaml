@@ -1,0 +1,12 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fastapi-app
+  annotations:
+    kubernetes.io/ingress.class: "gce"   # GKEのデフォルトIngressを使用:contentReference[oaicite:49]{index=49}
+spec:
+  defaultBackend:
+    service:
+      name: fastapi-app
+      port:
+        number: 80
