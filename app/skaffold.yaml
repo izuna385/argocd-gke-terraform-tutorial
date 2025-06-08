@@ -1,0 +1,34 @@
+# app/skaffold.yaml
+apiVersion: skaffold/v2beta16
+kind: Config
+metadata:
+  name: fastapi-app
+
+build:
+  artifacts:
+  - image: asia-northeast1-docker.pkg.dev/gcp-iap-test-442622/argocd-app/fastapi-app
+    context: .
+    docker:
+      dockerfile: Dockerfile
+
+  
+  tagPolicy:
+    gitCommit: {}
+
+# デプロイ設定は削除（ビルドのみに集中）
+# deploy:
+#   kubectl:
+#     manifests:
+#     - k8s-manifests/*.yaml
+
+profiles:
+- name: dev
+  build:
+    artifacts:
+    - image: asia-northeast1-docker.pkg.dev/gcp-iap-test-442622/argocd-app/fastapi-app
+      context: .
+      docker:
+        dockerfile: Dockerfile
+
+    tagPolicy:
+      sha256: {}

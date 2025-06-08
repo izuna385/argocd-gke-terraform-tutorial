@@ -1,0 +1,11 @@
+# GCP プロジェクト設定
+project_id = "your-gcp-project-id"
+region     = "asia-northeast1"
+
+# GKE クラスター設定
+cluster_name = "argocd-gke-cluster1"
+node_count   = 1
+machine_type = "e2-medium"
+
+# ドメイン設定
+domain_name = "example.com" 
