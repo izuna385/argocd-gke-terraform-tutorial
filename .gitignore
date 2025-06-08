@@ -1,0 +1,89 @@
+# Terraform関連ファイル
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+terraform.tfplan
+terraform.tfplan.*
+
+# サービスアカウントキーファイル（機密情報）
+terraform-sa-key.json
+*-sa-key.json
+*.json
+!package.json
+!package-lock.json
+
+# 環境変数ファイル
+.env
+.env.local
+.env.*.local
+
+# IDE/エディタ関連
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS関連
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ログファイル
+*.log
+logs/
+
+# 一時ファイル
+*.tmp
+*.temp
+.cache/
+
+# Kubernetes関連
+kubeconfig
+*.kubeconfig
+
+# Helm関連
+charts/*.tgz
+
+# バックアップファイル
+*.bak
+*.backup 
+
+# — Terraform のローカル作業ディレクトリ
+.terraform/
+
+# — Terraform の状態ファイルとバックアップ
+*.tfstate
+*.tfstate.backup
+
+# — Terraform Apply のプランファイル
+*.tfplan
+
+# — crash.log（CLI のクラッシュログ）
+crash.log
+
+# — override ファイル（ローカルデバッグ用）
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# — 自動変数ファイル（機密情報を含むことが多い）
+terraform.tfvars
+*.auto.tfvars
+
+# — CLI 設定ファイル
+.terraformrc
+terraform.rc
+
+# — サービスアカウントキーなど秘密情報ファイル
+terraform-sa-key.json
+# あるいは *.json でまとめて除外する場合も（必要に応じて）
+# *.json
