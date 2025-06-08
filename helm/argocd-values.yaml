@@ -1,0 +1,61 @@
+# ArgoCD Helm Chart Values
+# このファイルでArgoCDの設定をコード化
+
+server:
+  # サービスタイプをNodePortに設定（Ingressと組み合わせるため）
+  service:
+    type: NodePort
+    
+  # レプリカ数
+  replicas: 1
+  
+  # リソース制限
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
+
+  # Ingress設定（必要に応じて有効化）
+  ingress:
+    enabled: false
+    
+  # 追加の設定
+  extraArgs:
+    - --insecure
+
+# Redis設定
+redis:
+  enabled: true
+  
+# Repository Server設定
+repoServer:
+  replicas: 1
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
+
+# Application Controller設定
+controller:
+  replicas: 1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
+
+# 通知設定
+notifications:
+  enabled: false
+
+# Dex (OIDC) 設定
+dex:
+  enabled: false 
