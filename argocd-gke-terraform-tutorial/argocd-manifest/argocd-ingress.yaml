@@ -1,0 +1,81 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-ingress
+  namespace: argocd
+  annotations:
+    # グローバル静的IPを指定
+    kubernetes.io/ingress.global-static-ip-name: "argocd-ingress-ip"
+    # Google Cloud Load Balancerを使用
+    kubernetes.io/ingress.class: "gce"
+    # SSL証明書を指定
+    ingress.gcp.kubernetes.io/managed-certificates: "argocd-ssl-cert"
+    # HTTPからHTTPSへのリダイレクト（有効化）
+    ingress.gcp.kubernetes.io/ssl-redirect: "true"
+    # IAP設定（一時的に無効化）
+    # ingress.gcp.kubernetes.io/backend-config: '{"default": "argocd-iap-config"}'
+spec:
+  defaultBackend:
+    service:
+      name: argocd-server
+      port:
+        number: 80
+  rules:
+  - host: argocd.gke-argocd-terraform-tutorial.com
+    http:
+      paths:
+      - path: /*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argocd-server
+  namespace: argocd
+  annotations:
+    # NodePortサービスに変更（Ingressで使用するため）
+    # IAP設定（一時的に無効化）
+    # cloud.google.com/backend-config: '{"default": "argocd-iap-config"}'
+spec:
+  type: NodePort
+  ports:
+  - name: server
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/name: argocd-server
+    app.kubernetes.io/part-of: argocd
+---
+# IAP設定（一時的に無効化）
+# apiVersion: cloud.google.com/v1
+# kind: BackendConfig
+# metadata:
+#   name: argocd-iap-config
+#   namespace: argocd
+# spec:
+#   # IAP設定（OAuth Client IDとSecretは後で設定）
+#   iap:
+#     enabled: true
+#     oauthclientCredentials:
+#       secretName: oauth-client-secret
+#   # セッション親和性
+#   sessionAffinity:
+#     affinityType: "CLIENT_IP"
+#   # タイムアウト設定
+#   timeoutSec: 30
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: argocd-ssl-cert
+  namespace: argocd
+spec:
+  domains:
+    - argocd.gke-argocd-terraform-tutorial.com 

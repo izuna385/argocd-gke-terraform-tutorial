@@ -1,10 +1,10 @@
 variable "project_id" {
-  description = "GCP プロジェクト ID"
+  description = "Google Cloud プロジェクトID"
   type        = string
 }
 
 variable "region" {
-  description = "GCP リージョン"
+  description = "Google Cloud リージョン"
   type        = string
   default     = "asia-northeast1"
 }
@@ -12,22 +12,27 @@ variable "region" {
 variable "cluster_name" {
   description = "GKE クラスター名"
   type        = string
-  default     = "argocd-gke-cluster1"
+  default     = "argocd-gke-cluster"
 }
 
 variable "node_count" {
-  description = "ノード数"
+  description = "GKE ノード数"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "machine_type" {
-  description = "マシンタイプ"
+  description = "GKE ノードのマシンタイプ"
   type        = string
   default     = "e2-medium"
 }
 
 variable "domain_name" {
-  description = "独自ドメイン名（例: example.com）"
+  description = "ドメイン名"
+  type        = string
+}
+
+variable "support_email" {
+  description = "IAP OAuth同意画面用のサポートメールアドレス"
   type        = string
 }

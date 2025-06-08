@@ -364,5 +364,5 @@ $ helm install argocd-image-updater argo/argocd-image-updater --namespace argocd
 ```
 
 ## 参考文献
-
+https://medium.com/@tharukam/configuring-argo-cd-on-gke-with-ingress-iap-and-google-oauth-for-rbac-a746fd009b78
 https://zenn.dev/cloud_ace/articles/argocd_on_gke

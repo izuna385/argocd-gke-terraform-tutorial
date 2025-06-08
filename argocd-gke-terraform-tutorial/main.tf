@@ -63,6 +63,65 @@ resource "google_compute_address" "argocd_ip" {
   address_type = "EXTERNAL"
 }
 
+# グローバル静的IPの予約（Ingress用）
+resource "google_compute_global_address" "argocd_ingress_ip" {
+  name        = "argocd-ingress-ip"
+  description = "Static IP for ArgoCD Ingress"
+}
+
+# Google Managed SSL証明書
+resource "google_compute_managed_ssl_certificate" "argocd_ssl" {
+  name = "argocd-ssl-cert"
+
+  managed {
+    domains = ["argocd.${var.domain_name}"]
+  }
+}
+
+# 手動で作成したSSL証明書をTerraformで管理（既存リソースをインポート用）
+resource "google_compute_managed_ssl_certificate" "argocd_manual_ssl" {
+  name = "argocd-manual-ssl-cert"
+
+  managed {
+    domains = ["argocd.${var.domain_name}"]
+  }
+
+  lifecycle {
+    # 既存のリソースを保護
+    prevent_destroy = true
+  }
+}
+
+# HTTPSターゲットプロキシ
+resource "google_compute_target_https_proxy" "argocd_https_proxy" {
+  name             = "argocd-https-proxy"
+  url_map          = "k8s2-um-fweqqkn5-argocd-argocd-server-ingress-zi04abxy"
+  ssl_certificates = [google_compute_managed_ssl_certificate.argocd_manual_ssl.id]
+
+  depends_on = [google_compute_managed_ssl_certificate.argocd_manual_ssl]
+}
+
+# HTTPSフォワーディングルール
+resource "google_compute_global_forwarding_rule" "argocd_https_forwarding_rule" {
+  name       = "argocd-https-forwarding-rule"
+  target     = google_compute_target_https_proxy.argocd_https_proxy.id
+  port_range = "443"
+  ip_address = google_compute_global_address.argocd_ingress_ip.address
+
+  depends_on = [google_compute_target_https_proxy.argocd_https_proxy]
+}
+
+# IAP用のOAuth設定は手動で行う必要があります
+# 1. Google Cloud Console > APIs & Services > OAuth consent screen
+# 2. External を選択
+# 3. アプリ名: ArgoCD IAP
+# 4. サポートメール: h.hiroshi.nlp@gmail.com
+# 5. 承認済みドメイン: gke-argocd-terraform-tutorial.com
+# 6. APIs & Services > Credentials > Create Credentials > OAuth 2.0 Client IDs
+# 7. Application type: Web application
+# 8. Name: ArgoCD IAP Client
+# 9. Authorized redirect URIs: https://argocd.gke-argocd-terraform-tutorial.com/_gcp_gatekeeper/authenticate
+
 # Cloud DNS マネージドゾーンの作成
 resource "google_dns_managed_zone" "argocd_zone" {
   name        = "argocd-zone"
@@ -70,7 +129,7 @@ resource "google_dns_managed_zone" "argocd_zone" {
   description = "Zone for ArgoCD"
 }
 
-# A レコードの作成
+# A レコードの作成（Ingress用）
 resource "google_dns_record_set" "argocd_a_record" {
   name = "argocd.${var.domain_name}."
   type = "A"
@@ -78,6 +137,5 @@ resource "google_dns_record_set" "argocd_a_record" {
 
   managed_zone = google_dns_managed_zone.argocd_zone.name
 
-  # rrdatas = [google_compute_global_address.argocd_ip.address]
-  rrdatas = [google_compute_address.argocd_ip.address]
+  rrdatas = [google_compute_global_address.argocd_ingress_ip.address]
 }
